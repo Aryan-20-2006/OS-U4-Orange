@@ -600,3 +600,94 @@ The following questions cover filesystem concepts beyond the implementation scop
 - **Git Internals** (Pro Git book): https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain
 - **Git from the inside out**: https://codewords.recurse.com/issues/two/git-from-the-inside-out
 - **The Git Parable**: https://tom.preston-werner.com/2009/05/19/the-git-parable.html
+
+---
+
+## Lab Report (Submission Copy)
+
+Name: Aryan Burman
+
+SRN: PES2UG24CS088
+
+GitHub Repository: https://github.com/Aryan-20-2006/OS-U4-Orange
+
+### Screenshots
+
+Add your screenshots to a `screenshots/` folder at repository root and update links below.
+
+- **1A - test_objects all pass**: `![1A](screenshots/1A-test-objects.png)`
+- **1B - object store sharding**: `![1B](screenshots/1B-objects-sharding.png)`
+- **2A - test_tree all pass**: `![2A](screenshots/2A-test-tree.png)`
+- **2B - raw tree object (xxd first 20 lines)**: `![2B](screenshots/2B-tree-xxd.png)`
+- **3A - pes init/add/status sequence**: `![3A](screenshots/3A-status-sequence.png)`
+- **3B - .pes/index contents**: `![3B](screenshots/3B-index-file.png)`
+- **4A - pes log with 3 commits**: `![4A](screenshots/4A-log-three-commits.png)`
+- **4B - find .pes -type f | sort**: `![4B](screenshots/4B-objects-growth.png)`
+- **4C - refs/heads/main and HEAD**: `![4C](screenshots/4C-head-and-branch.png)`
+- **Final - integration test**: `![Final](screenshots/final-integration.png)`
+
+### Analysis Answers
+
+#### Q5.1 - How would you implement `pes checkout <branch>`?
+
+A branch is a reference file in `.pes/refs/heads/` that stores a commit hash. A checkout operation should:
+
+1. Read `.pes/HEAD` and update it to `ref: refs/heads/<branch>`.
+2. Read target commit hash from `.pes/refs/heads/<branch>`.
+3. Read the target commit and recursively load its tree.
+4. Rewrite the working directory to match that tree (create/update/delete files).
+5. Rebuild `.pes/index` so staged metadata matches the checked-out snapshot.
+
+Complexity comes from recursive tree traversal, file-vs-directory conflicts, preserving file modes, and refusing unsafe overwrites when local edits exist.
+
+#### Q5.2 - How to detect dirty-working-directory checkout conflicts?
+
+Using only index and object store:
+
+1. For each tracked path in index, compare working metadata (mtime/size) with index metadata.
+2. If metadata differs, hash current working file content and compare with index blob hash.
+3. If hashes differ, mark the path as dirty.
+4. Compute paths that would change between current branch tree and target branch tree.
+5. If any dirty path overlaps with would-change paths, abort checkout.
+
+This blocks destructive checkouts while allowing safe switches for unrelated local edits.
+
+#### Q5.3 - Detached HEAD behavior and recovery
+
+Detached HEAD means `.pes/HEAD` points directly to a commit hash, not a branch ref.
+
+- New commits still work and HEAD moves forward.
+- No branch pointer moves, so commits are not anchored to a branch name.
+- If user switches away, those commits can become unreachable and later garbage-collected.
+
+Recovery:
+
+1. Create a branch at the detached commit before switching, or
+2. Recover commit hash from history/reflog-like output and create a new branch pointing to it.
+
+#### Q6.1 - Algorithm for deleting unreachable objects
+
+Use mark-and-sweep reachability:
+
+1. Start from all refs (all branch heads) as roots.
+2. Traverse each reachable commit.
+3. Mark commit object, its tree, all subtrees, and all referenced blobs.
+4. Follow parent links and continue until traversal completes.
+5. Scan object store and delete objects not in the reachable set.
+
+Data structure: a hash set of object IDs for O(1) reachability checks, plus a queue/stack worklist.
+
+For 100,000 commits and 50 branches, visited unique commits are usually around 100,000 (not 5,000,000) because branches share history, plus all unique reachable trees and blobs.
+
+#### Q6.2 - Why concurrent GC is dangerous
+
+Race example:
+
+1. Commit process writes new blobs/trees.
+2. Before updating branch ref, these objects are temporarily unreachable from refs.
+3. Concurrent GC marks them unreachable and deletes them.
+4. Commit then updates ref to a commit that references missing objects.
+
+Result: broken history/corruption.
+
+How real Git avoids this: lock/coordinate writers and GC, keep grace periods before pruning, and avoid immediate deletion of newly created unreachable objects.
