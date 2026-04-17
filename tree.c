@@ -158,6 +158,8 @@ static int write_tree_level(const Index *index, const char *prefix, ObjectID *id
         const char *slash = strchr(rest, '/');
 
         if (!slash) {
+            if (rest[0] == '\0') return -1;
+            if (strlen(rest) >= sizeof(tree.entries[0].name)) return -1;
             if (entry_exists(&tree, rest)) continue;
             if (tree.count >= MAX_TREE_ENTRIES) return -1;
 
