@@ -196,6 +196,7 @@ int head_update(const ObjectID *new_commit) {
 int commit_create(const char *message, ObjectID *commit_id_out) {
     if (!commit_id_out) return -1;
     if (!message) return -1;
+    if (message[0] == '\0') return -1;
 
     Commit commit;
     memset(&commit, 0, sizeof(commit));
