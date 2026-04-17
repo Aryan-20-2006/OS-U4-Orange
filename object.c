@@ -117,6 +117,9 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
     memcpy(full_obj, header, (size_t)header_len);
     if (len > 0) memcpy(full_obj + (size_t)header_len, data, len);
 
+
+
+    //Hash includes header plus payload to match object on-disk identity
     compute_hash(full_obj, full_len, id_out);
     if (object_exists(id_out)) {
         free(full_obj);
