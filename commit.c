@@ -209,6 +209,7 @@ int commit_create(const char *message, ObjectID *commit_id_out) {
         commit.parent = parent;
         commit.has_parent = 1;
     } else {
+        // Initial commit has no parent pointer.
         commit.has_parent = 0;
     }
 
