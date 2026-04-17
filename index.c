@@ -196,6 +196,7 @@ int index_save(const Index *index) {
     if (!sorted) return -1;
     *sorted = *index;
 
+    // Sort by path so serialized index order is deterministic across saves.
     for (int i = 0; i < sorted->count; i++) {
         for (int j = i + 1; j < sorted->count; j++) {
             if (strcmp(sorted->entries[i].path, sorted->entries[j].path) > 0) {
