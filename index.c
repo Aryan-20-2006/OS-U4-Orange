@@ -159,6 +159,10 @@ int index_load(Index *index) {
             fclose(f);
             return -1;
         }
+        if (path[0] == '\0') {
+            fclose(f);
+            return -1;
+        }
 
         IndexEntry *e = &index->entries[index->count];
         e->mode = mode;
