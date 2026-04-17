@@ -135,6 +135,7 @@ int index_status(const Index *index) {
 //
 // Returns 0 on success, -1 on error.
 int index_load(Index *index) {
+    if (!index) return -1;
     index->count = 0;
 
     FILE *f = fopen(INDEX_FILE, "r");
