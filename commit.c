@@ -225,6 +225,7 @@ int commit_create(const char *message, ObjectID *commit_id_out) {
     free(raw);
     if (rc != 0) return -1;
 
+    // Update branch ref only after commit object is durably written.
     if (head_update(commit_id_out) != 0) return -1;
     return 0;
 }
