@@ -141,6 +141,8 @@ static int entry_exists(const Tree *tree, const char *name) {
 }
 
 static int write_tree_level(const Index *index, const char *prefix, ObjectID *id_out) {
+    if (!index || !prefix || !id_out) return -1;
+
     Tree tree;
     tree.count = 0;
 
