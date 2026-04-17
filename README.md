@@ -609,22 +609,26 @@ Name: Aryan Burman
 
 SRN: PES2UG24CS088
 
-GitHub Repository: https://github.com/Aryan-20-2006/OS-U4-Orange
+GitHub Repository: https://github.com/Aryan-20-2006/PES2UG24CS088-pes-vcs
 
 ### Screenshots
 
-Add your screenshots to a `screenshots/` folder at repository root and update links below.
+All required screenshots are included in the report PDF at repository root:
 
-- **1A - test_objects all pass**: `![1A](screenshots/1A-test-objects.png)`
-- **1B - object store sharding**: `![1B](screenshots/1B-objects-sharding.png)`
-- **2A - test_tree all pass**: `![2A](screenshots/2A-test-tree.png)`
-- **2B - raw tree object (xxd first 20 lines)**: `![2B](screenshots/2B-tree-xxd.png)`
-- **3A - pes init/add/status sequence**: `![3A](screenshots/3A-status-sequence.png)`
-- **3B - .pes/index contents**: `![3B](screenshots/3B-index-file.png)`
-- **4A - pes log with 3 commits**: `![4A](screenshots/4A-log-three-commits.png)`
-- **4B - find .pes -type f | sort**: `![4B](screenshots/4B-objects-growth.png)`
-- **4C - refs/heads/main and HEAD**: `![4C](screenshots/4C-head-and-branch.png)`
-- **Final - integration test**: `![Final](screenshots/final-integration.png)`
+- `OS-Orange U4.pdf`
+
+Included screenshot set:
+
+- 1A: `./test_objects` output showing all tests passing
+- 1B: `find .pes/objects -type f` sharded object structure
+- 2A: `./test_tree` output showing all tests passing
+- 2B: `xxd` output for a raw tree object (first 20 lines)
+- 3A: `pes init` -> `pes add` -> `pes status` sequence
+- 3B: `cat .pes/index` text-format index content
+- 4A: `pes log` output showing three commits
+- 4B: `find .pes -type f | sort` object growth view
+- 4C: `cat .pes/refs/heads/main` and `cat .pes/HEAD`
+- Final: `make test-integration` output
 
 ### Analysis Answers
 
