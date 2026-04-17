@@ -240,7 +240,12 @@ int object_read(const ObjectID *id, ObjectType *type_out, void **data_out, size_
     }
 
     long file_size_long = ftell(fp);
-    if (file_size_long < 0) {
+    // if (file_size_long < 0) {
+    //     fclose(fp);
+    //     return -1;
+    // }
+
+    if (file_size < 8) {
         fclose(fp);
         return -1;
     }
