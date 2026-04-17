@@ -152,6 +152,8 @@ int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out
         return -1;
     }
 
+    //if ((size_t)header_len > SIZE_MAX - len) return -1;
+
     size_t written = 0;
     while (written < full_len) {
         ssize_t n = write(fd, full_obj + written, full_len - written);
