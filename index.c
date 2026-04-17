@@ -269,6 +269,7 @@ int index_add(Index *index, const char *path) {
     struct stat st;
     if (stat(path, &st) != 0) return -1;
     if (!S_ISREG(st.st_mode)) return -1;
+    if ((uint64_t)st.st_size > UINT32_MAX) return -1;
 
     FILE *f = fopen(path, "rb");
     if (!f) return -1;
