@@ -187,6 +187,7 @@ static int write_tree_level(const Index *index, const char *prefix, ObjectID *id
         if (n < 0 || n >= (int)sizeof(child_prefix)) return -1;
 
         ObjectID child_id;
+        // Recurse into child directory and use the subtree hash as this entry target.
         if (write_tree_level(index, child_prefix, &child_id) != 0) return -1;
 
         TreeEntry *te = &tree.entries[tree.count++];
