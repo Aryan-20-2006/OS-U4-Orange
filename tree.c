@@ -145,6 +145,7 @@ static int write_tree_level(const Index *index, const char *prefix, ObjectID *id
     tree.count = 0;
 
     size_t prefix_len = strlen(prefix);
+    if (prefix_len >= 1000) return -1;
 
     for (int i = 0; i < index->count; i++) {
         const IndexEntry *ie = &index->entries[i];
