@@ -264,6 +264,7 @@ int index_save(const Index *index) {
 // Returns 0 on success, -1 on error.
 int index_add(Index *index, const char *path) {
     int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out);
+    if (!index || !path || path[0] == '\0') return -1;
 
     struct stat st;
     if (stat(path, &st) != 0) return -1;
